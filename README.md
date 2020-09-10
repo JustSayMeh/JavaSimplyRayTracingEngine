@@ -1,2 +1,2 @@
 # JavaSimplyRayTracingEngine
-![alt text](https://github.com/JustSayMeh/JavaSimplyRayTracingEngine/tree/master/iamges/1.png?raw=true)
+![alt text](https://github.com/JustSayMeh/JavaSimplyRayTracingEngine/blob/master/images/1.png?raw=true)
