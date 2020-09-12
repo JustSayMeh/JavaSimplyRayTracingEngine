@@ -132,88 +132,18 @@ public class Main extends JFrame {
                 "((mirror ratio):\\s*((\\d+\\.?\\d*)))|" +
                 "((refractive index):\\s*((\\d+\\.?\\d*)))|" +
                 "((refractive albedo):\\s*((\\d+\\.?\\d*)))");
-        //loadMaterialsFile("C:\\Users\\Oroma\\Desktop\\test.txt");
+
 
         final GLProfile profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities capabilities = new GLCapabilities(profile);
+        capabilities.setDoubleBuffered(true);
         canvas = new GLCanvas(capabilities);
-        Material redM = new Material(new Vector3D(0.3, 0.1, 0.1),
-                0.5,
-                0.6,
-                10,
-                0,
-                0);
-        Material yellowM = new Material(new Vector3D(0.3, 0.5, 0.4),
-                0.6,
-                0.3,
-                50,
-                0.0,
-                0);
-        Material mirror = new Material( new Vector3D(1, 1, 1),
-                0.1,
-                10,
-                1425,
-                0.9,
-                0);
-        Material mirror2 = new Material( new Vector3D(0.0, 0.0, 0.0),
-                0.9,
-                0.1,
-                2,
-                0.8,
-                0);
-        Material glass = new Material( new Vector3D(1, 1, 1),
-                0.1,
-                0.5,
-                125,
-                0,
-                1.5,
-                0.8);
-//        spheres.add(new Sphere(
-//                new Vector3D(3,    5,   18),
-//                4,
-//                glass
-//        ));
-//        spheres.add(new Sphere(
-//                new Vector3D(0, 2,   29),
-//                4,
-//                yellowM
-//        ));
-        shapes.add(new Sphere(
-                new Vector3D(3, -2,   40),
-                15,
-                yellowM
-        ));
-//        shapes.add(new Triangle(
-//                new Vector3D(-10, -10, 25).add(new Vector3D(14, 0,0)),
-//                new Vector3D(10, -10, 25).add(new Vector3D(14, 0,0)),
-//                new Vector3D(-15, -5, 34).add(new Vector3D(14, 0,0)),
-//
-//
-//
-//
-//                redM
-//        ));
-        shapes.add(new Tetrahedron(
-                        new Vector3D(-10, -10, 25).add(new Vector3D(14, 0,0)),
-                        new Vector3D(10, -10, 25).add(new Vector3D(14, 0,0)),
-                        new Vector3D(0, 10, 25).add(new Vector3D(14, 0,0)),
-                        new Vector3D(-15, -10, 34).add(new Vector3D(14, 0,0)),
-                        redM
-                )
-        );
-//        spheres.add(new Triangle(
-//                new Vector3D(-10, -10, 25).add(new Vector3D(14, 0,0)),
-//                new Vector3D(0, 40, 25).add(new Vector3D(14, 0,0)),
-//                new Vector3D(10, -10, 25).add(new Vector3D(14, 0,0)),
-//                redM
-//        ));
-        shapes.add(new Plane(new Vector3D(0,1,0), -15, mirror ));
+
+
         lights.add(new LightSource(new Vector3D(-20,20,-25), 1.5));
         lights.add(new LightSource(new Vector3D(30,30,25), 1.8));
         lights.add(new LightSource(new Vector3D(0,30,60), 1.8));
-        //lights.add(new LightSource(new Vector3D(30,10,-30), 1.7));
-        //lights.add(new LightSource(new Vector3D(3,-13,26), 1.7));
-        shapes.clear();
+
 
         listener = new CanvasEventListener(camera, shapes, lights, new Vector3D(0,0,0));
 

@@ -1,9 +1,13 @@
 package main;
 
+import com.jogamp.opengl.util.gl2.GLUT;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
@@ -16,6 +20,7 @@ public class CanvasEventListener implements GLEventListener {
     private int smooth = 1;
     private Camera camera;
     private boolean validate = false;
+    private float[] pixelArr;
     public CanvasEventListener(Camera camera, List<Introspective> s, List<LightSource> l, Vector3D c){
         this.spheres = s;
         this.lights = l;
@@ -121,11 +126,9 @@ public class CanvasEventListener implements GLEventListener {
         Vector3D n = camera.getViewDir();
         Vector3D u = camera.getUp().cross(n);
         Vector3D v = n.cross(u);
-
-        gl.glBegin(GL2.GL_POINTS);
-      //  ExecutorService threadPool = Executors.newFixedThreadPool(2);
-        for (int i = 0; i < Width; ++i)
-            for (int j = 0; j < Height; ++j) {
+        for (int j = 0; j < Height; ++j)
+            for (int i = 0; i < Width; ++i)
+             {
                 gl.glColor3d(0,0,0);
                 Vector3D color = new Vector3D(0,0,0);
                 int lb = (i - smooth >= 0) ? i - smooth: i;
@@ -156,10 +159,17 @@ public class CanvasEventListener implements GLEventListener {
                 for (Vector3D c : list)
                     color = color.add(c);
                 color = color.mult(1.0 / count);
+                int jflip = Height - 1 - j;
+                pixelArr[(jflip* Width + i) * 3] = (float)color.getX();
+                pixelArr[(jflip * Width + i) * 3 + 1] = (float)color.getY();
+                pixelArr[(jflip * Width + i) * 3 + 2] = (float)color.getZ();
                 gl.glColor3d(color.getX(),color.getY(),color.getZ());
                 gl.glVertex3i(i, j, 0);
             }
-        gl.glEnd();
+        FloatBuffer db = FloatBuffer.wrap(pixelArr);
+        gl.glDrawPixels(Width, Height, gl.GL_RGB, gl.GL_FLOAT, db);
+
+        gl.glFlush();
         validate = true;
     }
     public void invalidate(){
@@ -172,6 +182,7 @@ public class CanvasEventListener implements GLEventListener {
         GLU glu = new GLU();
         Width = width;
         Height = height;
+        pixelArr = new float[Width * Height * 3];
         gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
