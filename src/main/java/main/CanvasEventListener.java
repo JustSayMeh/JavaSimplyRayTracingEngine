@@ -1,14 +1,19 @@
 package main;
 
 import com.jogamp.opengl.util.gl2.GLUT;
+import jogamp.graph.curve.tess.HEdge;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -160,15 +165,14 @@ public class CanvasEventListener implements GLEventListener {
                     color = color.add(c);
                 color = color.mult(1.0 / count);
                 int jflip = Height - 1 - j;
-                pixelArr[(jflip* Width + i) * 3] = (float)color.getX();
-                pixelArr[(jflip * Width + i) * 3 + 1] = (float)color.getY();
-                pixelArr[(jflip * Width + i) * 3 + 2] = (float)color.getZ();
+                pixelArr[(jflip* Width + i) * 3] = (float)((color.getX() > 1)? 1 : color.getX());
+                pixelArr[(jflip * Width + i) * 3 + 1] = (float)((color.getY() > 1)? 1 : color.getY());
+                pixelArr[(jflip * Width + i) * 3 + 2] = (float)((color.getZ() > 1)? 1 : color.getZ());
                 gl.glColor3d(color.getX(),color.getY(),color.getZ());
                 gl.glVertex3i(i, j, 0);
             }
         FloatBuffer db = FloatBuffer.wrap(pixelArr);
         gl.glDrawPixels(Width, Height, gl.GL_RGB, gl.GL_FLOAT, db);
-
         gl.glFlush();
         validate = true;
     }
@@ -189,5 +193,23 @@ public class CanvasEventListener implements GLEventListener {
         glu.gluOrtho2D(0, width, height,0);
         //glu.gluPerspective(45, width/height, 0.1, 100);
         gl.glMatrixMode(GL2.GL_MODELVIEW);
+    }
+
+    public BufferedImage getPixels(){
+        BufferedImage image = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
+        Graphics graphics = image.getGraphics();
+        for (int j = 0; j < Height; ++j)
+            for (int i = 0; i < Width; ++i)
+            {
+                int jflip = Height - 1 - j;
+                graphics.setColor(new Color(
+                        pixelArr[(jflip* Width + i) * 3],
+                        pixelArr[(jflip * Width + i) * 3 + 1],
+                        pixelArr[(jflip * Width + i) * 3 + 2]
+                ));
+                graphics.drawRect(i, j, 1, 1);
+            }
+
+        return image;
     }
 }

@@ -5,12 +5,15 @@ import main.Shapes.Sphere;
 import main.Shapes.Tetrahedron;
 import main.Shapes.Triangle;
 
+import javax.imageio.ImageIO;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.Buffer;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -194,6 +197,20 @@ public class Main extends JFrame {
                 }
             }
         });
+        JMenuItem saveImg = new JMenuItem("Сохранить как");
+        saveImg.addActionListener((e) -> {
+            final JFileChooser fc = new JFileChooser();
+            int rv = fc.showOpenDialog(this);
+            if (rv == JFileChooser.APPROVE_OPTION){
+                File choosefile = fc.getSelectedFile();
+                BufferedImage image = listener.getPixels();
+                try {
+                    ImageIO.write(image, "png", choosefile);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
         JMenuItem cameraS = new JMenuItem("Камера");
 
         light.addActionListener((e) -> {
@@ -213,8 +230,10 @@ public class Main extends JFrame {
         });
         lists.add(materialsJ);
         lists.add(shapesJ);
-        file.add(addShapes);
+
         file.add(addMaterials);
+        file.add(addShapes);
+        file.add(saveImg);
 
         edit.add(cameraS);
         edit.add(light);
